@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mongo_dynamic_search
+      username: admin
+      password: 7MlG8f&H
