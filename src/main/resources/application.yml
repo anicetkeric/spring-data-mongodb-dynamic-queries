@@ -3,4 +3,6 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: spring_boot_mongo_javers
+      database: mongo_dynamic_search
+      username: admin
+      password: 7MlG8f&H

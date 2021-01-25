@@ -25,6 +25,19 @@ public class GenericFilterCriteriaBuilder {
     private static final Map<String, Function<FilterCondition, Criteria>>
             FILTER_CRITERIA = new HashMap<>();
 
+    // Create map of filter
+    static {
+        FILTER_CRITERIA.put("EQUAL", condition -> Criteria.where(condition.getField()).is(condition.getValue()));
+        FILTER_CRITERIA.put("NOT_EQUAL", condition -> Criteria.where(condition.getField()).ne(condition.getValue()));
+        FILTER_CRITERIA.put("GREATER_THAN", condition -> Criteria.where(condition.getField()).gt(condition.getValue()));
+        FILTER_CRITERIA.put("GREATER_THAN_OR_EQUAL_TO", condition -> Criteria.where(condition.getField()).gte(condition.getValue()));
+        FILTER_CRITERIA.put("LESS_THAN", condition -> Criteria.where(condition.getField()).lt(condition.getValue()));
+        FILTER_CRITERIA.put("LESSTHAN_OR_EQUAL_TO", condition -> Criteria.where(condition.getField()).lte(condition.getValue()));
+        FILTER_CRITERIA.put("CONTAINS", condition -> Criteria.where(condition.getField()).regex((String) condition.getValue()));
+        FILTER_CRITERIA.put("JOIN", condition -> Criteria.where(condition.getField()).is(new ObjectId((String) condition.getValue())));
+    }
+
+
     public GenericFilterCriteriaBuilder() {
         filterOrConditions = new ArrayList<>();
         filterAndConditions = new ArrayList<>();
@@ -49,32 +62,15 @@ public class GenericFilterCriteriaBuilder {
 
 
         if (!criteriaAndClause.isEmpty() && !criteriaOrClause.isEmpty()) {
-
             return new Query(criteria.andOperator(criteriaAndClause.toArray(new Criteria[0])).orOperator(criteriaOrClause.toArray(new Criteria[0])));
-
         } else if (!criteriaAndClause.isEmpty()) {
             return new Query(criteria.andOperator(criteriaAndClause.toArray(new Criteria[0])));
         } else if (!criteriaOrClause.isEmpty()) {
-
             return new Query(criteria.orOperator(criteriaOrClause.toArray(new Criteria[0])));
-
         } else {
             return new Query();
         }
 
-    }
-
-
-    // create map of filter
-    static {
-        FILTER_CRITERIA.put("EQUAL", condition -> Criteria.where(condition.getField()).is(condition.getValue()));
-        FILTER_CRITERIA.put("NOT_EQUAL", condition -> Criteria.where(condition.getField()).ne(condition.getValue()));
-        FILTER_CRITERIA.put("GREATER_THAN", condition -> Criteria.where(condition.getField()).gt(condition.getValue()));
-        FILTER_CRITERIA.put("GREATER_THAN_OR_EQUAL_TO", condition -> Criteria.where(condition.getField()).gte(condition.getValue()));
-        FILTER_CRITERIA.put("LESS_THAN", condition -> Criteria.where(condition.getField()).lt(condition.getValue()));
-        FILTER_CRITERIA.put("LESSTHAN_OR_EQUAL_TO", condition -> Criteria.where(condition.getField()).lte(condition.getValue()));
-        FILTER_CRITERIA.put("CONTAINS", condition -> Criteria.where(condition.getField()).regex((String) condition.getValue()));
-        FILTER_CRITERIA.put("JOIN", condition -> Criteria.where(condition.getField()).is(new ObjectId((String) condition.getValue())));
     }
 
 

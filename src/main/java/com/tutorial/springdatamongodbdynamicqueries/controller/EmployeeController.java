@@ -1,56 +1,86 @@
 package com.tutorial.springdatamongodbdynamicqueries.controller;
 
+import com.tutorial.springdatamongodbdynamicqueries.controller.dto.FilterCondition;
 import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
+import com.tutorial.springdatamongodbdynamicqueries.repository.support.GenericFilterCriteriaBuilder;
 import com.tutorial.springdatamongodbdynamicqueries.service.EmployeeService;
-import org.springframework.web.bind.annotation.*;
+import com.tutorial.springdatamongodbdynamicqueries.service.FilterBuilderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final FilterBuilderService filterBuilderService;
 
-    public EmployeeController(EmployeeService employeeService) {
+    public EmployeeController(EmployeeService employeeService, FilterBuilderService filterBuilderService) {
         this.employeeService = employeeService;
+        this.filterBuilderService = filterBuilderService;
     }
 
 
+    /**
+     * @param page      page number
+     * @param size      size count
+     * @param filterOr  string filter or conditions
+     * @param filterAnd string filter and conditions
+     * @param orders    string orders
+     * @return PageResponse<Employee>
+     */
+    @GetMapping(value = "/page")
+    public ResponseEntity<PageResponse<Employee>> getSearchCriteriaPage(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "filterOr", required = false) String filterOr,
+            @RequestParam(value = "filterAnd", required = false) String filterAnd,
+            @RequestParam(value = "orders", required = false) String orders) {
+
+        PageResponse<Employee> response = new PageResponse<>();
+
+        Pageable pageable = filterBuilderService.getPageable(size, page, orders);
+        GenericFilterCriteriaBuilder filterCriteriaBuilder = new GenericFilterCriteriaBuilder();
+
+
+        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
+        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
+
+        Query query = filterCriteriaBuilder.addCondition(andConditions, orConditions);
+        Page<Employee> pg = employeeService.getPage(query, pageable);
+        response.setPageStats(pg, pg.getContent());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * @param filterOr  string filter or conditions
+     * @param filterAnd string filter and conditions
+     * @return list of Employee
+     */
     @GetMapping()
-    public List<Employee> get() {
-        return employeeService.getAll();
+    public ResponseEntity<List<Employee>> getAllSearchCriteria(
+            @RequestParam(value = "filterOr", required = false) String filterOr,
+            @RequestParam(value = "filterAnd", required = false) String filterAnd) {
 
-    }
+        GenericFilterCriteriaBuilder filterCriteriaBuilder = new GenericFilterCriteriaBuilder();
 
-    @PostMapping()
-    public Employee save(@RequestBody Employee employee) {
-        return employeeService.save(employee);
-    }
+        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
+        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
 
-    @PutMapping(value = "/{id}")
-    public Employee update(@PathVariable("id") String id, @RequestBody Employee employee) {
+        Query query = filterCriteriaBuilder.addCondition(andConditions, orConditions);
+        List<Employee> employees = employeeService.getAll(query);
 
-        Optional<Employee> emp = employeeService.getById(id);
-        if (emp.isPresent()) {
-            emp.get().setFirstName(employee.getFirstName());
-            emp.get().setLastName(employee.getLastName());
-            emp.get().setEmail(employee.getEmail());
-
-            return employeeService.save(emp.get());
-        }
-        throw new RuntimeException("not found");
-
-    }
-
-    @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable(value = "id") String id) {
-        return employeeService.getById(id).orElseThrow(() -> new RuntimeException("not found"));
-    }
-    @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable(value = "id") String id) {
-        employeeService.deleteById(id);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
 

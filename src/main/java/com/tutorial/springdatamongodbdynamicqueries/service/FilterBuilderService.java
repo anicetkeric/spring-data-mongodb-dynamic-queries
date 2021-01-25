@@ -27,7 +27,7 @@ public class FilterBuilderService {
      * @param criteria search Criteria.
      * @return a list of {@link FilterCondition}
      */
-    private List<FilterCondition> createFilterCondition(String criteria) {
+    public List<FilterCondition> createFilterCondition(String criteria) {
         // TODO ajouter try catch
 
 

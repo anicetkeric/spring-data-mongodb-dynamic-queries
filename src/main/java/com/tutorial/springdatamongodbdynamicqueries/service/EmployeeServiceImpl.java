@@ -2,10 +2,12 @@ package com.tutorial.springdatamongodbdynamicqueries.service;
 
 import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
 import com.tutorial.springdatamongodbdynamicqueries.repository.EmployeeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -16,24 +18,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<Employee> getAll() {
-        return employeeRepository.findAll();
+    public List<Employee> getAll(Query query) {
+        return employeeRepository.findAll(query);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Employee save(Employee employee) {
-        return this.employeeRepository.save(employee);
-    }
-
-    @Override
-    public Optional<Employee> getById(String id) {
-        return employeeRepository.findById(id);
-    }
-
-    @Override
-    public void deleteById(String id) {
-        this.employeeRepository.deleteById(id);
+    public Page<Employee> getPage(Query query, Pageable pageable) {
+        return employeeRepository.findAll(query, pageable);
     }
 
 }

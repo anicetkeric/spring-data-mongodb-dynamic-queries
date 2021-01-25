@@ -1,18 +1,28 @@
 package com.tutorial.springdatamongodbdynamicqueries.service;
 
 
-
 import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
-    List<Employee> getAll();
 
-    Employee save(Employee employee);
 
-    Optional<Employee> getById(String id);
+    /**
+     * @param query custom query
+     * @return list of Employee
+     */
+    List<Employee> getAll(Query query);
 
-    void deleteById(String id);
+    /**
+     * Get all custom paginate data for entity Employee
+     *
+     * @param query    custom query
+     * @param pageable pageable param
+     * @return Page of entity Employee
+     */
+    Page<Employee> getPage(Query query, Pageable pageable);
 }
