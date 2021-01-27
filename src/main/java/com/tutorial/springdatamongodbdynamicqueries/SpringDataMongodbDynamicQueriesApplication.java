@@ -26,6 +26,7 @@ public class SpringDataMongodbDynamicQueriesApplication implements CommandLineRu
 
     @Override
     public void run(String... args) throws Exception {
+
         List<Department> departments = Arrays.asList(
                 new Department("IT", "IT department"),
                 new Department("RAD", "research and development team"),
@@ -33,6 +34,8 @@ public class SpringDataMongodbDynamicQueriesApplication implements CommandLineRu
                 new Department("TS", "technical support team"),
                 new Department("AG", "Accounting")
         );
+
+        employeeRepository.deleteAll();
 
         List<Employee> employees = Arrays.asList(
                 new Employee("600f4997e3a11bc10091f786","Ferdinand","Wynne","Etiam.ligula.tortor@vestibulumMauris.com",departments.get(0)),

@@ -2,6 +2,7 @@ package com.tutorial.springdatamongodbdynamicqueries.service;
 
 import com.tutorial.springdatamongodbdynamicqueries.controller.dto.FilterCondition;
 import com.tutorial.springdatamongodbdynamicqueries.enums.FilterOperationEnum;
+import com.tutorial.springdatamongodbdynamicqueries.exception.BadRequestException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -28,28 +29,32 @@ public class FilterBuilderService {
      * @return a list of {@link FilterCondition}
      */
     public List<FilterCondition> createFilterCondition(String criteria) {
-        // TODO ajouter try catch
-
-
         List<FilterCondition> filters = new ArrayList<>();
 
-        if (criteria != null && !criteria.isEmpty()) {
+        try {
 
-            final String FILTER_SHEARCH_DELIMITER = "&";
-            final String FILTER_CONDITION_DELIMITER = "\\|";
+            if (criteria != null && !criteria.isEmpty()) {
 
-            List<String> values = split(criteria, FILTER_SHEARCH_DELIMITER);
-            if (!values.isEmpty()) {
-                values.forEach(x -> {
-                    List<String> filter = split(x, FILTER_CONDITION_DELIMITER);
-                    if (FilterOperationEnum.fromValue(filter.get(1)) != null) {
-                        filters.add(new FilterCondition(filter.get(0), FilterOperationEnum.fromValue(filter.get(1)), filter.get(2)));
-                    }
-                });
+                final String FILTER_SHEARCH_DELIMITER = "&";
+                final String FILTER_CONDITION_DELIMITER = "\\|";
+
+                List<String> values = split(criteria, FILTER_SHEARCH_DELIMITER);
+                if (!values.isEmpty()) {
+                    values.forEach(x -> {
+                        List<String> filter = split(x, FILTER_CONDITION_DELIMITER);
+                        if (FilterOperationEnum.fromValue(filter.get(1)) != null) {
+                            filters.add(new FilterCondition(filter.get(0), FilterOperationEnum.fromValue(filter.get(1)), filter.get(2)));
+                        }
+                    });
+                }
             }
+
+            return filters;
+
+        } catch (Exception ex) {
+            throw new BadRequestException("Cannot create condition filter " + ex.getMessage());
         }
 
-        return filters;
     }
 
 
@@ -68,33 +73,34 @@ public class FilterBuilderService {
      * @return PageRequest
      */
     public PageRequest getPageable(int size, int page, String order) {
-        // TODO ajouter try catch
 
         int pageSize = (size <= 0) ? DEFAULT_SIZE_PAGE : size;
         int currentPage = (page <= 0) ? 1 : page;
 
-        if (order != null && !order.isEmpty()) {
+        try {
+            if (order != null && !order.isEmpty()) {
 
-            final String FILTER_CONDITION_DELIMITER = "\\|";
+                final String FILTER_CONDITION_DELIMITER = "\\|";
 
-            List<String> values = split(order, FILTER_CONDITION_DELIMITER);
-            String column = values.get(0);
-            String sortDirection = values.get(1);
+                List<String> values = split(order, FILTER_CONDITION_DELIMITER);
+                String column = values.get(0);
+                String sortDirection = values.get(1);
 
-            if (sortDirection.equalsIgnoreCase("ASC")) {
-                return PageRequest.of((currentPage - 1), pageSize, Sort.by(Sort.Direction.ASC, column));
-            } else if (sortDirection.equalsIgnoreCase("DESC")) {
-                return PageRequest.of((currentPage - 1), pageSize, Sort.by(Sort.Direction.DESC, column));
+                if (sortDirection.equalsIgnoreCase("ASC")) {
+                    return PageRequest.of((currentPage - 1), pageSize, Sort.by(Sort.Direction.ASC, column));
+                } else if (sortDirection.equalsIgnoreCase("DESC")) {
+                    return PageRequest.of((currentPage - 1), pageSize, Sort.by(Sort.Direction.DESC, column));
+                } else {
+                    throw new IllegalArgumentException(String.format("Value for param 'order' is not valid : %s , must be 'asc' or 'desc'", sortDirection));
+                }
+
             } else {
-                throw new IllegalArgumentException(String.format("Value for param 'order' is not valid : %s , must be 'asc' or 'desc'", sortDirection));
+                return PageRequest.of((currentPage - 1), pageSize);
             }
-
-        }else {
-            return PageRequest.of((currentPage - 1), pageSize);
+        } catch (Exception ex) {
+            throw new BadRequestException("Cannot create condition filter " + ex.getMessage());
         }
     }
-
-
 
 
 }
