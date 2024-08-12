@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.tutorial</groupId>
     <artifactId>spring-data-mongodb-dynamic-queries</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>spring-data-mongodb-dynamic-queries</name>
     <description>Demo project for Spring Boot</description>
     <properties>
