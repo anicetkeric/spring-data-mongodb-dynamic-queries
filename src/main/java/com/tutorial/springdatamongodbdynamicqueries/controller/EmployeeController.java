@@ -1,13 +1,10 @@
 package com.tutorial.springdatamongodbdynamicqueries.controller;
 
-import com.tutorial.springdatamongodbdynamicqueries.controller.dto.FilterCondition;
-import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
-import com.tutorial.springdatamongodbdynamicqueries.repository.support.GenericFilterCriteriaBuilder;
+import com.tutorial.springdatamongodbdynamicqueries.document.Employee;
+import com.tutorial.springdatamongodbdynamicqueries.helpers.FilterSortRegister;
+import com.tutorial.springdatamongodbdynamicqueries.helpers.PageResponse;
 import com.tutorial.springdatamongodbdynamicqueries.service.EmployeeService;
-import com.tutorial.springdatamongodbdynamicqueries.service.FilterBuilderService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,13 +19,10 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final FilterBuilderService filterBuilderService;
 
-    public EmployeeController(EmployeeService employeeService, FilterBuilderService filterBuilderService) {
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.filterBuilderService = filterBuilderService;
     }
-
 
     /**
      * @param page      page number
@@ -42,21 +36,15 @@ public class EmployeeController {
     public ResponseEntity<PageResponse<Employee>> getSearchCriteriaPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
-            @RequestParam(value = "filterOr", required = false) String filterOr,
-            @RequestParam(value = "filterAnd", required = false) String filterAnd,
+            @RequestParam(value = "or", required = false) String filterOr,
+            @RequestParam(value = "and", required = false) String filterAnd,
             @RequestParam(value = "orders", required = false) String orders) {
 
         PageResponse<Employee> response = new PageResponse<>();
 
-        Pageable pageable = filterBuilderService.getPageable(size, page, orders);
-        GenericFilterCriteriaBuilder filterCriteriaBuilder = new GenericFilterCriteriaBuilder();
+        var request = new FilterSortRegister(page, size, filterOr, filterAnd, orders);
 
-
-        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
-        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
-
-        Query query = filterCriteriaBuilder.addCondition(andConditions, orConditions);
-        Page<Employee> pg = employeeService.getPage(query, pageable);
+        Page<Employee> pg = employeeService.getPage(request);
         response.setPageStats(pg, pg.getContent());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -69,19 +57,14 @@ public class EmployeeController {
      */
     @GetMapping()
     public ResponseEntity<List<Employee>> getAllSearchCriteria(
-            @RequestParam(value = "filterOr", required = false) String filterOr,
-            @RequestParam(value = "filterAnd", required = false) String filterAnd) {
+            @RequestParam(value = "or", required = false) String filterOr,
+            @RequestParam(value = "and", required = false) String filterAnd,
+            @RequestParam(value = "orders", required = false) String orders) {
 
-        GenericFilterCriteriaBuilder filterCriteriaBuilder = new GenericFilterCriteriaBuilder();
+        var request = new FilterSortRegister(0, 0, filterOr, filterAnd, orders);
 
-        List<FilterCondition> andConditions = filterBuilderService.createFilterCondition(filterAnd);
-        List<FilterCondition> orConditions = filterBuilderService.createFilterCondition(filterOr);
-
-        Query query = filterCriteriaBuilder.addCondition(andConditions, orConditions);
-        List<Employee> employees = employeeService.getAll(query);
+        List<Employee> employees = employeeService.getAll(request);
 
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
-
-
 }

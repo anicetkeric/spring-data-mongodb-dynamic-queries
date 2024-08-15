@@ -1,5 +1,6 @@
-package com.tutorial.springdatamongodbdynamicqueries.domain;
+package com.tutorial.springdatamongodbdynamicqueries.document;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
@@ -22,6 +23,6 @@ public class Employee {
 
     private String email;
 
-    @NonNull
+    @NotNull
     private Department department;
 }

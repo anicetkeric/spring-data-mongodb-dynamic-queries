@@ -1,7 +1,7 @@
 package com.tutorial.springdatamongodbdynamicqueries;
 
-import com.tutorial.springdatamongodbdynamicqueries.domain.Department;
-import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
+import com.tutorial.springdatamongodbdynamicqueries.document.Department;
+import com.tutorial.springdatamongodbdynamicqueries.document.Employee;
 import com.tutorial.springdatamongodbdynamicqueries.repository.EmployeeRepository;
 import com.tutorial.springdatamongodbdynamicqueries.repository.support.ResourceRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;

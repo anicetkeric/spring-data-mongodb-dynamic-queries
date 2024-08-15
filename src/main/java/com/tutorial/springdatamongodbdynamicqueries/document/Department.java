@@ -1,16 +1,17 @@
-package com.tutorial.springdatamongodbdynamicqueries.domain;
+package com.tutorial.springdatamongodbdynamicqueries.document;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Department {
 
-    @NonNull
+    @NotNull
     private String code;
 
     private String name;

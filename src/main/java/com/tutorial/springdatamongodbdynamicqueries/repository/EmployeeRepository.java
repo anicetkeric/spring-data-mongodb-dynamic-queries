@@ -1,6 +1,6 @@
 package com.tutorial.springdatamongodbdynamicqueries.repository;
 
-import com.tutorial.springdatamongodbdynamicqueries.domain.Employee;
+import com.tutorial.springdatamongodbdynamicqueries.document.Employee;
 import org.springframework.stereotype.Repository;
 
 @Repository

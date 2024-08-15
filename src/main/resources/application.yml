@@ -3,6 +3,10 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: mongo_dynamic_search
-      username: admin
-      password: 7MlG8f&H
+      database: sample_training
+      username: demouser
+      password: bk2rFn*d
+
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: TRACE
