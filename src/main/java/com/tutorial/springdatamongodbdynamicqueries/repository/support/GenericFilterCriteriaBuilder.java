@@ -46,7 +46,7 @@ public class GenericFilterCriteriaBuilder {
 
         List<Criteria> criteriaAndClause = new ArrayList<>();
         List<Criteria> criteriaOrClause = new ArrayList<>();
-        Criteria criteria = new Criteria();
+        var criteria = new Criteria();
 
         // build criteria
         filterAndConditions.forEach(condition -> criteriaAndClause.add(buildCriteria(condition)));
@@ -71,7 +71,7 @@ public class GenericFilterCriteriaBuilder {
      * Build the predicate according to the request
      *
      * @param condition The condition of the filter requested by the query
-     * @return {{@link Criteria}}
+     * @return {@link Criteria}
      */
     private Criteria buildCriteria(FilterCondition condition) {
         Function<FilterCondition, Criteria>

@@ -2,7 +2,6 @@ package com.tutorial.springdatamongodbdynamicqueries.document;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
 @Document(collection = "employee")
 public class Employee {
 

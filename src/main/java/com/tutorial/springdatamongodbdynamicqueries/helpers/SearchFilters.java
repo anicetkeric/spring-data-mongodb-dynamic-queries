@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author boottech
  * <p>
- * Description: Class Pagination
+ * Description: Use to build FilterCondition list-based controller params
  */
 public record SearchFilters(List<FilterCondition> filterAndConditions, List<FilterCondition> filterOrConditions) {
 }
