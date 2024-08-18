@@ -20,7 +20,7 @@ Endpoint demo
 GET http://localhost:8080/employee/page?page=1&size=5
 GET http://localhost:8080/employee/page?page=1&size=5&orders=firstName;ASC
 GET http://localhost:8080/employee/page?page=1&size=5&and=firstName;like;C&orders=firstName;DESC
+GET http://localhost:8080/employee?orders=firstName;DESC
+http://localhost:8080/employee/page?page=1&size=5&and=lastName;like;r&or=department.code;eq;TS&orders=email;DESC
 
-GET http://localhost:8080/api/employee/search?page=1&size=10&or=firstName;startwith;K,firstName;like;ir
-GET http://localhost:8080/api/employee/search?page=1&size=10&or=firstName;startwith;K,firstName;like;on
 ```
