@@ -91,12 +91,30 @@ public class FilterBuilder {
 
         int pageSize = (size <= 0) ? DEFAULT_SIZE_PAGE : size;
         int currentPage = (page <= 0) ? 1 : page;
+        try {
+            var sorting = getSort(orders);
+
+            return PageRequest.of((currentPage - 1), pageSize, sorting);
+
+        } catch (Exception ex) {
+            throw new BadRequestException(MessageFormat.format("Cannot create condition filter. Error: {0}", ex.getMessage()));
+        }
+    }
+
+    /**
+     * Get request pageable. Page Request Builder. custom pageable
+     *
+     * @param orders search order filter (eg: field:ASC)
+     * @return PageRequest
+     */
+    public Sort getSort(String orders) {
+
         List<Sort.Order> orderList = new ArrayList<>();
 
         try {
 
             if (!StringUtils.hasLength(orders)) {
-                return PageRequest.of((currentPage - 1), pageSize, Sort.unsorted());
+                return Sort.unsorted();
             }
 
             List<String> multipleOrder = split(orders, FILTER_SEARCH_DELIMITER);
@@ -119,13 +137,13 @@ public class FilterBuilder {
                     }
                 });
 
-                return PageRequest.of((currentPage - 1), pageSize, Sort.by(orderList));
+                return Sort.by(orderList);
             }
 
-            return PageRequest.of((currentPage - 1), pageSize, Sort.unsorted());
+            return Sort.unsorted();
 
         } catch (Exception ex) {
-            throw new BadRequestException(MessageFormat.format("Cannot create condition filter. Error: {0}", ex.getMessage()));
+            throw new BadRequestException(MessageFormat.format("Cannot create extract orders params. Error: {0}", ex.getMessage()));
         }
     }
 

@@ -20,12 +20,20 @@ public interface GenericService<T, D extends Serializable> {
     List<T> getAll();
 
     /**
-     * Get all paginate data for document
+     * Get all data for document and querye
      *
      * @param request pageable param
      * @return Page of document T
      */
     List<T> getAll(FilterSortRegister request);
+
+    /**
+     * Get all paginate data for document
+     *
+     * @param request pageable param
+     * @return Page of document T
+     */
+    List<T> getAllSort(FilterSortRegister request);
 
     /**
      * Get all custom paginate data for document T

@@ -47,6 +47,19 @@ public class GenericServiceImpl<T, D extends Serializable> implements GenericSer
      * {@inheritDoc}
      */
     @Override
+    public List<T> getAllSort(FilterSortRegister request) {
+        var search = filterBuilder.getFilters(request.filterAnd(), request.filterOr());
+        var sort = filterBuilder.getSort(request.orders());
+
+        var query = new GenericFilterCriteriaBuilder(search).buildQuery();
+
+        return repository.findAllByQuerySort(query, sort);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<T> getPage(FilterSortRegister request) {
         var search = filterBuilder.getFilters(request.filterAnd(), request.filterOr());
         var pageable = filterBuilder.getPageable(request.size(), request.page(), request.orders());

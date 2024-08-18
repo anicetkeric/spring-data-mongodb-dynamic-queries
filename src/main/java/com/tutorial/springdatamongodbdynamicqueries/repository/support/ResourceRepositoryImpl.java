@@ -4,6 +4,7 @@ import com.tutorial.springdatamongodbdynamicqueries.repository.ResourceRepositor
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class ResourceRepositoryImpl<T, I extends Serializable> extends SimpleMongoRepository<T, I> implements ResourceRepository<T, I> {
 
+    public static final String QUERY_MUST_NOT_BE_NULL = "Query must not be null!";
     private final MongoOperations mongoOperations;
     private final MongoEntityInformation<T, I> entityInformation;
 
@@ -27,7 +29,7 @@ public class ResourceRepositoryImpl<T, I extends Serializable> extends SimpleMon
 
     @Override
     public Page<T> findAll(final Query query, final Pageable pageable) {
-        Assert.notNull(query, "Query must not be null!");
+        Assert.notNull(query, QUERY_MUST_NOT_BE_NULL);
 
         long total = mongoOperations.count(query, entityInformation.getJavaType(), entityInformation.getCollectionName());
         List<T> content = mongoOperations.find(query.with(pageable), entityInformation.getJavaType(), entityInformation.getCollectionName());
@@ -37,7 +39,13 @@ public class ResourceRepositoryImpl<T, I extends Serializable> extends SimpleMon
 
     @Override
     public List<T> findAllByQuery(Query query) {
-        Assert.notNull(query, "Query must not be null!");
+        Assert.notNull(query, QUERY_MUST_NOT_BE_NULL);
         return mongoOperations.find(query, entityInformation.getJavaType(), entityInformation.getCollectionName());
+    }
+
+    @Override
+    public List<T> findAllByQuerySort(Query query, Sort sort) {
+        Assert.notNull(query, QUERY_MUST_NOT_BE_NULL);
+        return mongoOperations.find(query.with(sort), entityInformation.getJavaType(), entityInformation.getCollectionName());
     }
 }

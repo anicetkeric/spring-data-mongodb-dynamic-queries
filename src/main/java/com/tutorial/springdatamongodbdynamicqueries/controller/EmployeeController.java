@@ -63,7 +63,7 @@ public class EmployeeController {
 
         var request = new FilterSortRegister(0, 0, filterOr, filterAnd, orders);
 
-        List<Employee> employees = employeeService.getAll(request);
+        List<Employee> employees = employeeService.getAllSort(request);
 
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
