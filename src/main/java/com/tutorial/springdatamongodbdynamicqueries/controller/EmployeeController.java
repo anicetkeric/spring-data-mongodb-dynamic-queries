@@ -45,7 +45,7 @@ public class EmployeeController {
         var request = new FilterSortRegister(page, size, filterOr, filterAnd, orders);
 
         Page<Employee> pg = employeeService.getPage(request);
-        response.setPageStats(pg, pg.getContent());
+        response.setPage(pg, pg.getContent());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
