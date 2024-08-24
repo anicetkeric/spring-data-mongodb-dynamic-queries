@@ -12,10 +12,9 @@ Ensure you have this installed before proceeding further
 
 ## Post link
 
-https://dzone.com/articles/advanced-search-amp-filtering-api-using-spring-dat
+https://boottechnologies-ci.medium.com/advanced-sort-and-filtering-rest-api-using-spring-data-and-mongodb-3e2f1140a189
 
-
-Endpoint demo
+## Endpoint demo
 ```
 GET http://localhost:8080/employee/page?page=1&size=5
 GET http://localhost:8080/employee/page?page=1&size=5&orders=firstName;ASC
